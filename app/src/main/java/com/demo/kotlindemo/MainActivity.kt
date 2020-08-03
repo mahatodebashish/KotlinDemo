@@ -3,22 +3,47 @@ package com.demo.kotlindemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        GlobalScope.launch { // launch a new coroutine in background and continue
-            delay(1000L) // non-blocking delay for 1 second (default time unit is ms)
-            Log.d("print::","Hello!")
+        // finding the textView
+        var textView = findViewById(R.id.txtView) as TextView
 
+        //With Coroutines
+      /*  GlobalScope.launch(Dispatchers.IO) {
 
-        }
-        Log.d("print::","World") // main thread continues while coroutine is delayed
-        Thread.sleep(2000L) // block main thread for 2 seconds to keep JVM alive
+                    repeat(10_000){
+                        delay(1000L)
+
+                        withContext(Dispatchers.Main){
+                            textView.setText(""+ Math.random())
+                        }
+                    }
+
+        }*/
+
+        //Without Coroutines
+        val mylamda = Thread({
+            repeat (10_000){
+                Thread.sleep(1000L)
+              //  println("$x")
+                runOnUiThread { textView.setText(""+ Math.random()) }
+
+            }
+        })
+        startThread(mylamda)
+
     }
+    }
+fun startThread(mylamda: Thread) {
+    mylamda.start()
 }
+
